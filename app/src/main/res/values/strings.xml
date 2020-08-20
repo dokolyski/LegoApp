@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Lego</string>
+    <string name="connection_error">Cannot connect download this resource. Check your internet connection and given URL.</string>
+    <string name="xml_error">Cannot parse this file.</string>
+    <string name="xml_success">Successful load of project.</string>
+    <string name="preference_file_key">preferences</string>
+    <string name="source_url">source_url</string>
+</resources>
