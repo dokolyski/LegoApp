@@ -31,7 +31,7 @@ class DownloadXmlTask(private val activity: Activity) : AsyncTask<String, Void, 
             this.cancel(true)
         }
         return try {
-            loadXmlFromNetwork(sourceUrl + inputId + ".xml")
+            loadXmlFromNetwork("$sourceUrl$inputId.xml")
         } catch (e: IOException) {
             activity.application.resources.getString(R.string.connection_error)
         } catch (e: XmlPullParserException) {

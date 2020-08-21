@@ -13,10 +13,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val sharedPref = this.getPreferences(Context.MODE_PRIVATE) ?: return
-        with (sharedPref.edit()) {
-            putString(getString(R.string.source_url), "http://fcds.cs.put.poznan.pl/MyWeb/BL/")
-            commit()
-        }
 
         setContentView(R.layout.activity_main)
         val button = findViewById<Button>(R.id.downloadNewSetButton)
