@@ -9,6 +9,6 @@ interface ItemTypesDAO {
     @Query("SELECT * FROM ItemTypes")
     fun getAll(): List<ItemType>
 
-    @Query("SELECT * FROM ItemTypes WHERE Code = :itemType LIMIT 1")
-    fun findByItemType(itemType: String): ItemType
+    @Query("SELECT id FROM ItemTypes WHERE Code = :code LIMIT 1")
+    fun findIdByItemType(code: String): Int?
 }

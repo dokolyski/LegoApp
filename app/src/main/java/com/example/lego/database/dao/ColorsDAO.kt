@@ -9,6 +9,6 @@ interface ColorsDao {
     @Query("SELECT * FROM Colors")
     fun getAll(): List<Color>
 
-    @Query("SELECT * FROM Colors WHERE Code = :colorCode")
-    fun findByCode(colorCode: Int): Color
+    @Query("SELECT id FROM Colors WHERE Code = :colorCode")
+    fun findIdByCode(colorCode: Int): Int?
 }

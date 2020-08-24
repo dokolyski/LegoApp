@@ -4,14 +4,22 @@ import android.app.Application
 import android.util.Xml
 import androidx.lifecycle.AndroidViewModel
 import com.example.lego.database.DatabaseSingleton
+import com.example.lego.database.entity.InventoryPart
+import com.example.lego.xml.exceptions.PartNotFound
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import java.io.InputStream
+import java.lang.NullPointerException
 
 data class Entry(var inventoryId: Int?, var typeId: Int?, var itemID: Int?, var quantityInSet: Int?, var quantityInStore: Int?, var colorID: Int?, var extra: Int?) {
     constructor() :
-            this(null, null, null, null, 0, null, null)
+            this(null, null, null, null, null, null, null)
+
+    @Throws(NullPointerException::class)
+    fun castToInventoryPart(inventoryId: Int) : InventoryPart {
+        return InventoryPart(0, inventoryId, typeId!!, itemID!!, quantityInSet!!, quantityInStore?:0, colorID?:0, extra?:0)
+    }
 }
 
 // We don't use namespaces
@@ -19,7 +27,7 @@ private val ns: String? = null
 
 class XMLParser(application: Application) : AndroidViewModel(application) {
     @Throws(XmlPullParserException::class, IOException::class)
-    fun parse(inputStream: InputStream): List<Entry> {
+    fun parse(inputStream: InputStream): HashMap<String, List<*>> {
         inputStream.use { inputStream ->
             val parser: XmlPullParser = Xml.newPullParser()
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
@@ -30,32 +38,38 @@ class XMLParser(application: Application) : AndroidViewModel(application) {
     }
 
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun readFeed(parser: XmlPullParser): List<Entry> {
-        val entries = mutableListOf<Entry>()
+    private fun readFeed(parser: XmlPullParser): HashMap<String, List<*>> {
+        val items = mutableListOf<Entry>()
+        val itemsNotFound = mutableListOf<String>()
 
         parser.require(XmlPullParser.START_TAG, ns, "INVENTORY")
-        while (parser.next() != XmlPullParser.END_TAG || parser.text != "INVENTORY") {
+        while (parser.next() != XmlPullParser.END_TAG || parser.name != "INVENTORY") {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
             // Starts by looking for the entry tag
             if (parser.name == "ITEM") {
                 try {
-                    entries.add(readItemProperties(parser))
+                    items.add(readItemProperties(parser))
                 } catch (e: XmlPullParserException) {
                     continue
+                } catch (e: PartNotFound) {
+                    itemsNotFound.add(e.message!!)
                 }
             }
         }
-        return entries
+        return hashMapOf(
+            "items" to items,
+            "itemsNotFound" to itemsNotFound
+        )
     }
 
-    @Throws(XmlPullParserException::class, IOException::class)
+    @Throws(XmlPullParserException::class, PartNotFound::class)
     private fun readItemProperties(parser: XmlPullParser): Entry {
         val part = Entry()
         var isAlternateN: Boolean = false
         parser.require(XmlPullParser.START_TAG, ns, "ITEM")
-        while (parser.next() != XmlPullParser.END_TAG || parser.text != "ITEM"){
+        while (parser.next() != XmlPullParser.END_TAG || parser.name != "ITEM"){
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
@@ -69,11 +83,11 @@ class XMLParser(application: Application) : AndroidViewModel(application) {
             when(tagName) {
                 "QTY" -> part.quantityInSet = parser.text.toInt()
                 "QTYFILLED" -> part.quantityInStore = parser.text.toInt()
-                "ITEMID" -> part.itemID = parser.text.toInt()
+                "ITEMID" -> part.itemID = DatabaseSingleton.getInstance(getApplication()).PartsDAO().findIdByCode(parser.text)
                 "ITEMTYPE" -> part.typeId = DatabaseSingleton.getInstance(getApplication()).ItemTypesDAO()
-                    .findByItemType(parser.text).id
+                    .findIdByItemType(parser.text)
                 "COLOR" -> part.colorID = DatabaseSingleton.getInstance(getApplication()).ColorsDao()
-                    .findByCode(parser.text[0].toInt()).id
+                    .findIdByCode(parser.text[0].toInt())
                 "ALTERNATE" -> {
                     if (parser.text != "N") {
                         throw XmlPullParserException("ALTERNATE != N")
@@ -83,8 +97,8 @@ class XMLParser(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
-        if (parser.text != "ITEM") throw XmlPullParserException("UNEXPECTED TOKEN " + parser.text)
         if (!isAlternateN) throw XmlPullParserException("ALTERNATE != N")
+        if (part.itemID == null) throw PartNotFound(PartNotFound.createMessage(part.itemID, part.colorID))
         return part
     }
 }

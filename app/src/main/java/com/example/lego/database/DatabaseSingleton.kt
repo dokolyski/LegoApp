@@ -15,7 +15,7 @@ import com.example.lego.database.entity.*
     Code::class,
     InventoryPart::class,
     Part::class
-), version = 3)
+), version = 4)
 abstract class DatabaseSingleton : RoomDatabase() {
     abstract fun ItemTypesDAO (): ItemTypesDAO
 
@@ -33,15 +33,18 @@ abstract class DatabaseSingleton : RoomDatabase() {
 
     companion object{
         var INSTANCE: DatabaseSingleton? = null
-        fun getInstance(context: Context): DatabaseSingleton{
-            if (INSTANCE == null){
-                INSTANCE = Room.databaseBuilder(
-                    context,
-                    DatabaseSingleton::class.java,
-                    "BrickList")
-                    .build()
+        fun getInstance(context: Context): DatabaseSingleton {
+            if (INSTANCE == null) {
+                synchronized(DatabaseSingleton::class.java) {
+                    if (INSTANCE == null) {
+                        INSTANCE = Room.databaseBuilder(
+                            context.applicationContext,
+                            DatabaseSingleton::class.java, "BrickListDatabase")
+                            .createFromAsset("BrickList.db")
+                            .build()
+                    }
+                }
             }
-
             return INSTANCE as DatabaseSingleton
         }
     }

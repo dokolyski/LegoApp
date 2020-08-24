@@ -1,6 +1,7 @@
 package com.example.lego.database.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.lego.database.entity.Inventory
@@ -17,5 +18,15 @@ interface InventoriesDAO {
     fun checkIfExistsByName(name: String): Boolean
 
     @Insert
-    fun insert(vararg newInventory: Inventory)
+    fun insert(newInventory: Inventory)
+
+    @Delete
+    fun delete(inventories: List<Inventory>)
+
+    @Query("SELECT * FROM Inventories")
+    fun findAll(): List<Inventory>
+
+    fun deleteAll() {
+        delete(findAll())
+    }
 }

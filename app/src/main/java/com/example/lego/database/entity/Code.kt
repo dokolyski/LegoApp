@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Codes")
 data class Code(
-    @PrimaryKey val id: Int,
-    @ColumnInfo(name = "ItemId") val itemId: Int?,
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    @ColumnInfo(name = "ItemID") val itemId: Int,
     @ColumnInfo(name = "ColorID") val colorId: Int?,
     @ColumnInfo(name = "Code") val code: Int?,
-    @ColumnInfo(name = "Image", typeAffinity = ColumnInfo.BLOB) val image: Array<Byte>
+    @ColumnInfo(name = "Image", typeAffinity = ColumnInfo.BLOB) var image: ByteArray?
 )
