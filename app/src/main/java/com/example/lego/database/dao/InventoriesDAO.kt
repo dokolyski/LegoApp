@@ -26,6 +26,9 @@ interface InventoriesDAO {
     @Query("SELECT * FROM Inventories")
     fun findAll(): List<Inventory>
 
+    @Query("SELECT Id FROM Inventories WHERE Name = :name LIMIT 1")
+    fun findIdByName(name: String): Int?
+
     fun deleteAll() {
         delete(findAll())
     }

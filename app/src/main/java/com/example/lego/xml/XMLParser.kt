@@ -69,7 +69,7 @@ class XMLParser(application: Application) : AndroidViewModel(application) {
         val part = Entry()
         var isAlternateN: Boolean = false
         parser.require(XmlPullParser.START_TAG, ns, "ITEM")
-        while (parser.next() != XmlPullParser.END_TAG || parser.name != "ITEM"){
+        while (parser.next() != XmlPullParser.END_TAG || parser.name != "ITEM") {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }

@@ -1,12 +1,12 @@
-package com.example.lego
+package com.example.lego.activity.settingsActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.lego.R
 
 class SettingsActivity : AppCompatActivity() {
 

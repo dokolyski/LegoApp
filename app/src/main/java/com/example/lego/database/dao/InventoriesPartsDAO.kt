@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.lego.database.entity.Inventory
 import com.example.lego.database.entity.InventoryPart
 
 @Dao
@@ -16,6 +17,9 @@ interface InventoriesPartsDAO {
 
     @Query("SELECT * FROM InventoriesParts")
     fun findAll(): List<InventoryPart>
+
+    @Query("SELECT * FROM InventoriesParts WHERE InventoryID = :inventoryId")
+    fun findAllByInventoryId(inventoryId: Int): List<InventoryPart>
 
     fun deleteAll() {
         delete(findAll())

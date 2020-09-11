@@ -5,4 +5,6 @@
     <string name="xml_success">Successful load of project.</string>
     <string name="preference_file_key">preferences</string>
     <string name="source_url">source_url</string>
+    <string name="inventory_id_repeated">inventory already exists</string>
+    <string name="inventory_name_repeated">inventory with this name already exists</string>
 </resources>

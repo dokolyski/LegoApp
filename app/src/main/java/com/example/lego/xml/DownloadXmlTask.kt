@@ -19,6 +19,7 @@ import java.lang.NullPointerException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.Instant
+import kotlin.jvm.Throws
 
 class DownloadXmlTask(private val activity: Activity) : AsyncTask<String, Void, String>() {
     val inputId: String = activity.findViewById<EditText>(R.id.blockSetIdInput).editableText.toString()
@@ -29,7 +30,7 @@ class DownloadXmlTask(private val activity: Activity) : AsyncTask<String, Void, 
 
 
 //        this function will clean your projects' set, only for development use !!!!!
-        deleteAllInventories()
+//        deleteAllInventories()
 
 
         val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
@@ -70,13 +71,13 @@ class DownloadXmlTask(private val activity: Activity) : AsyncTask<String, Void, 
     }
 
     @Throws(XmlPullParserException::class, IOException::class)
-    fun loadXmlFromNetwork(urlString: String, inventoryId: String, inventoryName: String?) : String {
+    private fun loadXmlFromNetwork(urlString: String, inventoryId: String, inventoryName: String) : String {
         val parts: HashMap<String, List<*>>? = downloadFromUrl(urlString)?.use(XMLParser(activity.application)::parse)
         if (parts != null) {
             DatabaseSingleton.getInstance(activity.applicationContext).InventoriesDAO().insert(
                 Inventory(
                     inventoryId.toInt(),
-                    inventoryName ?: inventoryId,
+                    if (inventoryName == "") inventoryId else inventoryName,
                     lastAccess = Instant.now().epochSecond.toInt()
                 )
             )

@@ -10,16 +10,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.mainActivity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingsActivity"/>
-        <activity android:name=".AboutProjectActivity"/>
-        <activity android:name=".AddProject"/>
+        <activity android:name=".activity.settingsActivity.SettingsActivity"/>
+        <activity android:name=".activity.inventoryActivity.AboutProjectActivity"/>
+        <activity android:name=".activity.mainActivity.AddProject"/>
     </application>
 
 </manifest>
