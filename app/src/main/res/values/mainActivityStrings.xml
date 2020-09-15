@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="inputId">Inventory ID</string>
+    <string name="inputName">Inventory name</string>
+    <string name="downloadButton">Add\n new inventory</string>
+    <string name="existingInventoriesLabel">Existing inventories:</string>
+</resources>

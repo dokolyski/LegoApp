@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".activity.mainActivity.MainActivity">
 
+    <TextView
+        android:id="@+id/existingInventoriesLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/existingInventoriesLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
     <EditText
         android:id="@+id/blockSetNameInput"
         android:layout_width="wrap_content"
@@ -13,7 +24,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="@string/inputName"
         app:layout_constraintEnd_toStartOf="@+id/downloadNewSetButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/blockSetIdInput" />
@@ -25,7 +36,7 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="@string/inputId"
         app:layout_constraintEnd_toStartOf="@+id/downloadNewSetButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,22 +45,33 @@
         android:id="@+id/downloadNewSetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="52dp"
-        android:text="Button"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/downloadButton"
+        app:layout_constraintBottom_toTopOf="@+id/partsListView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.018" />
 
     <ListView
-        android:id="@+id/listView"
+        android:id="@+id/partsListView"
         android:layout_width="412dp"
         android:layout_height="496dp"
-        android:layout_marginTop="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/blockSetNameInput"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintTop_toBottomOf="@+id/existingInventoriesLabel"
+        app:layout_constraintVertical_bias="0.115" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/blockSetNameInput" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

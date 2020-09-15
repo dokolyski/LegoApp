@@ -34,13 +34,13 @@ class MainActivity : AppCompatActivity() {
             DownloadXmlTask(this).execute()
         }
 
-        val listView = findViewById<ListView>(R.id.listView)
+        val listView = findViewById<ListView>(R.id.partsListView)
 
         // Create the observer which updates the UI.
-        val inventoriesObserver = Observer<List<Inventory>> {
+        val inventoriesObserver = Observer<List<Inventory>> { inventoryList ->
             // Update the UI, in this case, a TextView.
             labelsArray.clear()
-            it.forEach {
+            inventoryList.forEach {
                 labelsArray.add(it.name)
             }
             listView.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, labelsArray)

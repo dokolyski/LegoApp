@@ -1,69 +1,27 @@
 package com.example.lego.activity.inventoryActivity
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.forEach
 import androidx.core.view.get
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.example.lego.R
-import com.example.lego.database.entity.InventoryPart
 
 class ItemAdapter(
     private val context: Context,
-    private val items: List<InventoryPart>) : BaseAdapter( ){
-    data class LayoutRowData(val position: Int, val title: String, val description: String, val imageBitmap: Bitmap?)
-
-    private val inventoriesLiveData: Array<MutableLiveData<LayoutRowData>?> = arrayOfNulls(items.size)
+    private val items: List<LayoutRowData>,
+) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val layoutInflater = LayoutInflater.from(context)
-        val rowMain = layoutInflater.inflate(R.layout.row_item, parent, false)
+        val rowView = layoutInflater.inflate(R.layout.row_item, parent, false)
+        val item: LayoutRowData = items[position]
 
-        inventoriesLiveData[position] = MutableLiveData()
+        fillLayout(rowView, item)
 
-        val item: InventoryPart = items[position]
-
-        val maxElements: TextView = rowMain.findViewById(R.id.textView_maxElements)
-        val itemsNumberElement: TextView = rowMain.findViewById(R.id.integer_number)
-
-        maxElements.text = item.quantityInSet.toString()
-        itemsNumberElement.text = item.QuantityInStore.toString()
-
-        // Create the observer which updates the UI.
-        val inventoriesObserver = Observer<LayoutRowData> { rowData ->
-            parent?.let {
-//                val index: Int = parent.childCount - 1 - parent[parent.childCount - 1].id + position
-                val listItem = parent[position] as ViewGroup
-                listItem.forEach {
-                    when(it.id) {
-                        R.id.textView_top -> (it as TextView).text = rowData.title
-                        R.id.textView_down -> (it as TextView).text = rowData.description
-                        R.id.imageView -> (it as ImageView).setImageBitmap(rowData.imageBitmap)
-                    }
-                }
-            }
-        }
-
-        inventoriesLiveData[position]?.let {
-            it.observe(context as LifecycleOwner, inventoriesObserver)
-            Thread(
-                RowDataService(
-                    position,
-                    it,
-                    context,
-                    item
-                )
-            ).start()
-        }
-
-        val increase = rowMain.findViewById<Button>(R.id.increase)
-        val decrease = rowMain.findViewById<Button>(R.id.decrease)
+        val increase = rowView.findViewById<Button>(R.id.increase)
+        val decrease = rowView.findViewById<Button>(R.id.decrease)
 
         increase.setOnClickListener {
             val listItem = it.parent as LinearLayout
@@ -84,7 +42,7 @@ class ItemAdapter(
             }
         }
 
-        return rowMain
+        return rowView
     }
 
     override fun getItem(position: Int): Any {
@@ -109,6 +67,20 @@ class ItemAdapter(
 
     private fun display(number: TextView, newNumber: Int) {
         number.setText("$newNumber")
+    }
+
+    private fun fillLayout(rowView: View, data: LayoutRowData) {
+        val maxElements: TextView = rowView.findViewById(R.id.textView_maxElements)
+        val itemsNumberElement: TextView = rowView.findViewById(R.id.integer_number)
+        val mainLabel: TextView = rowView.findViewById(R.id.textView_top)
+        val descriptionLabel: TextView = rowView.findViewById(R.id.textView_down)
+        val imageView: ImageView = rowView.findViewById(R.id.imageView)
+
+        maxElements.text = data.quantityInSet
+        itemsNumberElement.text = data.quantityInStore
+        mainLabel.text = data.title
+        descriptionLabel.text = data.description
+        imageView.setImageBitmap(data.imageBitmap)
     }
 
 }
