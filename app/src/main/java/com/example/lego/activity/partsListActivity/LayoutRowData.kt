@@ -1,9 +1,8 @@
-package com.example.lego.activity.inventoryActivity
+package com.example.lego.activity.partsListActivity
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.lifecycle.MutableLiveData
 import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.InventoryPart
 
@@ -22,7 +21,7 @@ class LayoutRowData(
         title = databaseSingleton.PartsDAO().findById(item.itemID)?.let {
             it.namePL ?: it.name
         } ?: ""
-        description = databaseSingleton.ColorsDao().findByCode(item.colorId)?.let {
+        description = databaseSingleton.ColorsDAO().findByCode(item.colorId)?.let {
             "${it.namePL ?: it.name} [${item.itemID}]"
         } ?: ""
         // load image into imageView

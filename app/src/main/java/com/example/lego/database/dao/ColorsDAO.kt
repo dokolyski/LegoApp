@@ -5,7 +5,7 @@ import androidx.room.Query
 import com.example.lego.database.entity.Color
 
 @Dao
-interface ColorsDao {
+interface ColorsDAO {
     @Query("SELECT * FROM Colors")
     fun getAll(): List<Color>
 

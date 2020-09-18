@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="purgeDatabaseButton">Purge database (dangerous)</string>
+    <string name="source_url">sourceUrl</string>
+    <string name="show_archived">showArchived</string>
+    <string name="defaultSourceUrl">http://fcds.cs.put.poznan.pl/MyWeb/BL/</string>
+</resources>

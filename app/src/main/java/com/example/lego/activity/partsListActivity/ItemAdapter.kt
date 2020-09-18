@@ -1,4 +1,4 @@
-package com.example.lego.activity.inventoryActivity
+package com.example.lego.activity.partsListActivity
 
 import android.content.Context
 import android.view.LayoutInflater

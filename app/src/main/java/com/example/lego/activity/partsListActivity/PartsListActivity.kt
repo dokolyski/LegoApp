@@ -1,15 +1,16 @@
-package com.example.lego.activity.inventoryActivity
+package com.example.lego.activity.partsListActivity
 
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.lego.R
 import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.InventoryPart
 
-class AboutProjectActivity : AppCompatActivity() {
+class PartsListActivity : AppCompatActivity() {
     private val inventoriesPartsLiveData: MutableLiveData<List<LayoutRowData>> by lazy {
         MutableLiveData<List<LayoutRowData>>()
     }
@@ -17,6 +18,9 @@ class AboutProjectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about_project)
+
+        val progressBar: ProgressBar = findViewById(R.id.listLoadProgressBar)
+        progressBar.isVisible = true
 
         val listView = findViewById<ListView>(R.id.partsListView)
 
@@ -27,6 +31,7 @@ class AboutProjectActivity : AppCompatActivity() {
         title.text = inventoryName
 
         val partsObserver = Observer<List<LayoutRowData>> {
+            progressBar.isVisible = false
             listView.adapter = ItemAdapter(this, it)
         }
 

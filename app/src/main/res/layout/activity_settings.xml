@@ -11,14 +11,14 @@
         android:id="@+id/prefixOfUrlTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="5dp"
         android:layout_weight="1"
         android:text="Prefix of URL:"
         android:textColor="@android:color/black"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,32 +27,18 @@
         android:id="@+id/archivedSwitch"
         android:layout_width="209dp"
         android:layout_height="33dp"
-        android:layout_marginTop="168dp"
+        android:layout_marginTop="24dp"
         android:text="Show archived"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pathPrefixOfUrlPlainText" />
-
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="132dp"
-        android:layout_height="59dp"
-        android:background="@android:color/holo_green_light"
-        android:text="Save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.926" />
 
     <EditText
         android:id="@+id/pathPrefixOfUrlPlainText"
         android:layout_width="264dp"
         android:layout_height="66dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="8dp"
         android:editable="true"
         android:ems="10"
         android:focusable="auto"
@@ -60,7 +46,20 @@
         android:text="/path/prefix/of/url"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/prefixOfUrlTextView" />
+
+    <Button
+        android:id="@+id/purgeDatabaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:backgroundTint="#FF0000"
+        android:text="@string/purgeDatabaseButton"
+        android:textColor="#E3C1C1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/archivedSwitch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

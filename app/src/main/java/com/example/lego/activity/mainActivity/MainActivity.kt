@@ -5,17 +5,18 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.example.lego.activity.inventoryActivity.AboutProjectActivity
+import com.example.lego.activity.partsListActivity.PartsListActivity
 import com.example.lego.R
+import com.example.lego.activity.settingsActivity.SettingsActivity
 import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.Inventory
 import com.example.lego.xml.DownloadXmlTask
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
     private val inventoriesLiveData: MutableLiveData<List<Inventory>> by lazy {
@@ -25,13 +26,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
-        val button = findViewById<Button>(R.id.downloadNewSetButton)
-        button.setOnClickListener {
-            Log.d("EVENT", "button clicked")
-            button.isEnabled = false
+
+        val addNewProjectButton = findViewById<Button>(R.id.downloadNewSetButton)
+        addNewProjectButton.setOnClickListener {
+            addNewProjectButton.isEnabled = false
             DownloadXmlTask(this).execute()
+        }
+
+        val goToSettingsButton = findViewById<FloatingActionButton>(R.id.settingsButton)
+        goToSettingsButton.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
 
         val listView = findViewById<ListView>(R.id.partsListView)
@@ -59,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         // przejscie do widoku projektu
-                        val intent = Intent(this, AboutProjectActivity::class.java)
+                        val intent = Intent(this, PartsListActivity::class.java)
                         val inventoryName = labelsArray[position]
                         intent.putExtra("inventoryName", inventoryName)
                         startActivity(intent)

@@ -1,34 +1,55 @@
 package com.example.lego.activity.settingsActivity
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.lego.R
+import com.example.lego.database.DatabaseSingleton
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity: AppCompatActivity() {
+    private lateinit var pathPrefixOfURL: EditText
+    private lateinit var showArchivedSwitch: Switch
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val showArchivedSwitch = findViewById<Switch>(R.id.archivedSwitch)
-        val saveButton = findViewById<Button>(R.id.saveButton)
-        val pathPrefixOfURL = findViewById<EditText>(R.id.pathPrefixOfUrlPlainText)
-        val settingsView = findViewById<ConstraintLayout>(R.id.settingsView)
+        pathPrefixOfURL = findViewById(R.id.pathPrefixOfUrlPlainText)
+        showArchivedSwitch = findViewById(R.id.archivedSwitch)
+        sharedPref = getPreferences(Context.MODE_PRIVATE)
+        setActualValues()
 
-//        settingsView.setOnClickListener{
-//            pathPrefixOfURL.is
-//        }
-//
-//        pathPrefixOfURL.setOnClickListener {
-//            //pathPrefixOfURL.isEnabled = true
-//        }
-
-
-
+        val purgeButton = findViewById<Button>(R.id.purgeDatabaseButton)
+        purgeButton.setOnClickListener {
+            DatabaseSingleton.getInstance(this).InventoriesPartsDAO().deleteAll()
+            DatabaseSingleton.getInstance(this).InventoriesDAO().deleteAll()
+        }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        saveChanges()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        saveChanges()
+    }
+
+    private fun setActualValues() {
+        pathPrefixOfURL.setText(sharedPref.getString(resources.getString(R.string.source_url), resources.getString(R.string.defaultSourceUrl)))
+        showArchivedSwitch.isChecked = sharedPref.getBoolean(resources.getString(R.string.show_archived), false)
+    }
+
+    private fun saveChanges() {
+        sharedPref.edit()
+            .putString(resources.getString(R.string.source_url), pathPrefixOfURL.text.toString())
+            .putBoolean(resources.getString(R.string.show_archived), showArchivedSwitch.isChecked)
+            .apply()
+    }
 }

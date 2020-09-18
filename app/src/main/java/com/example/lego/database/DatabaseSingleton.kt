@@ -21,7 +21,7 @@ abstract class DatabaseSingleton : RoomDatabase() {
 
     abstract fun InventoriesDAO (): InventoriesDAO
 
-    abstract fun ColorsDao (): ColorsDao
+    abstract fun ColorsDAO (): ColorsDAO
 
     abstract fun CodesDAO (): CodesDAO
 

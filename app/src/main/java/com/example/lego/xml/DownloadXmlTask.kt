@@ -27,16 +27,10 @@ class DownloadXmlTask(private val activity: Activity) : AsyncTask<String, Void, 
     var broken: Boolean = false
 
     override fun doInBackground(vararg urls: String): String {
-
-
-//        this function will clean your projects' set, only for development use !!!!!
-//        deleteAllInventories()
-
-
         val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
         val sourceUrl = sharedPref.getString(
             activity.resources.getString(R.string.source_url),
-            "http://fcds.cs.put.poznan.pl/MyWeb/BL/"
+            activity.resources.getString(R.string.defaultSourceUrl)
         )
 
         if (DatabaseSingleton.getInstance(activity.application).InventoriesDAO().checkIfExistsById(
@@ -169,10 +163,5 @@ class DownloadXmlTask(private val activity: Activity) : AsyncTask<String, Void, 
         message.plus("\n")
         notFoundParts.forEach { message.plus("\n" + it) }
         return message
-    }
-
-    private fun deleteAllInventories() {
-        DatabaseSingleton.getInstance(activity).InventoriesPartsDAO().deleteAll()
-        DatabaseSingleton.getInstance(activity).InventoriesDAO().deleteAll()
     }
 }
