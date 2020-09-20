@@ -19,7 +19,6 @@
         </activity>
         <activity android:name=".activity.settingsActivity.SettingsActivity"/>
         <activity android:name=".activity.partsListActivity.PartsListActivity"/>
-        <activity android:name=".activity.mainActivity.AddProject"/>
     </application>
 
 </manifest>
