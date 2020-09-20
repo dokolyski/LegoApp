@@ -22,22 +22,25 @@ class ItemAdapter(
 
         val increase = rowView.findViewById<Button>(R.id.increase)
         val decrease = rowView.findViewById<Button>(R.id.decrease)
+        val maxNumber = rowView.findViewById<TextView>(R.id.textView_maxElements)
 
         increase.setOnClickListener {
             val listItem = it.parent as LinearLayout
             for (i: Int in 0 until listItem.childCount) {
-                val child: View = listItem.get(i)
+                val child: View = listItem[i]
                 if (child.id == R.id.integer_number) {
-                    increaseInteger(child as TextView)
+                    if( (child as TextView).text.toString().toInt() != maxNumber.text.toString().toInt())
+                        increaseInteger(child)
                 }
             }
         }
         decrease.setOnClickListener {
             val listItem = it.parent as LinearLayout
             for (i: Int in 0 until listItem.childCount) {
-                val child: View = listItem.get(i)
+                val child: View = listItem[i]
                 if (child.id == R.id.integer_number) {
-                    decreaseInteger(child as TextView)
+                    if( (child as TextView).text.toString().toInt() > 0)
+                        decreaseInteger(child)
                 }
             }
         }
