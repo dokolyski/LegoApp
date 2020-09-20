@@ -1,10 +1,12 @@
 package com.example.lego.activity.partsListActivity
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.get
 import com.example.lego.R
 
@@ -29,8 +31,11 @@ class ItemAdapter(
             for (i: Int in 0 until listItem.childCount) {
                 val child: View = listItem[i]
                 if (child.id == R.id.integer_number) {
-                    if( (child as TextView).text.toString().toInt() != maxNumber.text.toString().toInt())
+                    if( (child as TextView).text.toString().toInt() != maxNumber.text.toString().toInt()) {
                         increaseInteger(child)
+                        if ( (child as TextView).text.toString().toInt() == maxNumber.text.toString().toInt())
+                            (listItem.parent as ConstraintLayout).setBackgroundColor(Color.CYAN)
+                    }
                 }
             }
         }
@@ -41,6 +46,8 @@ class ItemAdapter(
                 if (child.id == R.id.integer_number) {
                     if( (child as TextView).text.toString().toInt() > 0)
                         decreaseInteger(child)
+                        if ( (child as TextView).text.toString().toInt() != maxNumber.text.toString().toInt())
+                            (listItem.parent as ConstraintLayout).setBackgroundColor(Color.WHITE)
                 }
             }
         }
@@ -84,6 +91,10 @@ class ItemAdapter(
         mainLabel.text = data.title
         descriptionLabel.text = data.description
         imageView.setImageBitmap(data.imageBitmap)
+
+        if( (data.quantityInSet == data.quantityInStore)){
+            (maxElements.parent as ConstraintLayout).setBackgroundColor(Color.CYAN)
+        }
     }
 
 }

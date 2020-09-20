@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.lego.activity.partsListActivity.PartsListActivity
 import com.example.lego.R
+import com.example.lego.activity.partsListActivity.ProjectAdapter
 import com.example.lego.activity.settingsActivity.SettingsActivity
 import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.Inventory
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             inventoryList.forEach {
                 labelsArray.add(it.name)
             }
-            listView.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, labelsArray)
+            listView.adapter = ProjectAdapter(this)
         }
 
         inventoriesLiveData.observe(this, inventoriesObserver)
