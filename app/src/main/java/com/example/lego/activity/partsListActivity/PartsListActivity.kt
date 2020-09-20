@@ -41,6 +41,7 @@ class PartsListActivity : AppCompatActivity() {
             val databaseSingleton: DatabaseSingleton = DatabaseSingleton.getInstance(this)
             val codeInventory: Int? = databaseSingleton.InventoriesDAO().findIdByName(inventoryName)
             if (codeInventory != null) {
+                databaseSingleton.InventoriesDAO().updateLastAccessTime(inventoryName)
                 val inventoryPartsList: List<InventoryPart> = databaseSingleton.InventoriesPartsDAO().findAllByInventoryId(codeInventory)
                 inventoriesPartsLiveData.postValue(inventoryPartsList.map { LayoutRowData(this, it) })
             } else {

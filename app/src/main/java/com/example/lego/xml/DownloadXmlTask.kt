@@ -27,14 +27,14 @@ class DownloadXmlTask(private val activity: Activity) : AsyncTask<String, Void, 
     var broken: Boolean = false
 
     override fun doInBackground(vararg urls: String): String {
-        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
+        val sharedPref = activity.getSharedPreferences(activity.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         val sourceUrl = sharedPref.getString(
             activity.resources.getString(R.string.source_url),
             activity.resources.getString(R.string.defaultSourceUrl)
         )
 
         if (DatabaseSingleton.getInstance(activity.application).InventoriesDAO().checkIfExistsById(
-                inputId
+                inputId.toInt()
             )) { // check is set already in database
             broken = true
             return activity.application.resources.getString(R.string.inventory_id_repeated)

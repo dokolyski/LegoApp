@@ -1,17 +1,19 @@
 package com.example.lego.activity.mainActivity
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.example.lego.activity.partsListActivity.PartsListActivity
 import com.example.lego.R
+import com.example.lego.activity.partsListActivity.PartsListActivity
 import com.example.lego.activity.partsListActivity.ProjectAdapter
 import com.example.lego.activity.settingsActivity.SettingsActivity
 import com.example.lego.database.DatabaseSingleton
@@ -24,6 +26,14 @@ class MainActivity : AppCompatActivity() {
         MutableLiveData<List<Inventory>>()
     }
     private val labelsArray = arrayListOf<String>()
+
+    override fun onResume() {
+        super.onResume()
+        Thread {
+            val alsoArchived: Boolean = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).getBoolean(resources.getString(R.string.show_archived), false)
+            inventoriesLiveData.postValue(DatabaseSingleton.getInstance(this).InventoriesDAO().findAll(alsoArchived))
+        }.start()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,19 +65,15 @@ class MainActivity : AppCompatActivity() {
 
         inventoriesLiveData.observe(this, inventoriesObserver)
 
-        Thread {
-            inventoriesLiveData.postValue(DatabaseSingleton.getInstance(this).InventoriesDAO().findAll())
-        }.start()
-
         listView.setOnItemClickListener { parent, view, position, id ->
             val element = listView.adapter.getItem(position)
 
             val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
+                val inventoryName = labelsArray[position]
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         // przejscie do widoku projektu
                         val intent = Intent(this, PartsListActivity::class.java)
-                        val inventoryName = labelsArray[position]
                         intent.putExtra("inventoryName", inventoryName)
                         startActivity(intent)
                     }
@@ -75,10 +81,11 @@ class MainActivity : AppCompatActivity() {
                         val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
                             when (which) {
                                 DialogInterface.BUTTON_POSITIVE -> {
-                                    // Archiwizacja projektu
-                                }
-                                DialogInterface.BUTTON_NEGATIVE -> {
-
+                                    // Archiwizacja/dearchiwizacja projektu
+                                    Thread {
+                                        DatabaseSingleton.getInstance(this).InventoriesDAO().changeArchiveStatus(inventoryName)
+                                        onResume()
+                                    }.start()
                                 }
                             }
                         }

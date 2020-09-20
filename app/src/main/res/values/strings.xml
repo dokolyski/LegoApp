@@ -7,4 +7,6 @@
     <string name="inventory_id_repeated">inventory already exists</string>
     <string name="inventory_name_repeated">inventory with this name already exists</string>
     <string name="sd_not_found">SD card wasn\'t found</string>
+    <string name="archive_message">Are you sure you want to ARCHIVE this project?</string>
+    <string name="dearchive_message">Are you sure you want to DEARCHIVE this project?</string>
 </resources>

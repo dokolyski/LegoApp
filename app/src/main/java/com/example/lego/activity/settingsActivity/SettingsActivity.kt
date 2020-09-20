@@ -21,7 +21,7 @@ class SettingsActivity: AppCompatActivity() {
 
         pathPrefixOfURL = findViewById(R.id.pathPrefixOfUrlPlainText)
         showArchivedSwitch = findViewById(R.id.archivedSwitch)
-        sharedPref = getPreferences(Context.MODE_PRIVATE)
+        sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         setActualValues()
 
         val purgeButton = findViewById<Button>(R.id.purgeDatabaseButton)
@@ -31,14 +31,9 @@ class SettingsActivity: AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
         saveChanges()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        saveChanges()
+        super.onPause()
     }
 
     private fun setActualValues() {
