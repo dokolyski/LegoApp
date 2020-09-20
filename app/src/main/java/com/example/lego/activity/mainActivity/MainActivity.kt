@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +12,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.lego.R
 import com.example.lego.activity.partsListActivity.PartsListActivity
-import com.example.lego.activity.partsListActivity.ProjectAdapter
 import com.example.lego.activity.settingsActivity.SettingsActivity
 import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.Inventory
@@ -25,14 +22,11 @@ class MainActivity : AppCompatActivity() {
     private val inventoriesLiveData: MutableLiveData<List<Inventory>> by lazy {
         MutableLiveData<List<Inventory>>()
     }
-    private val labelsArray = arrayListOf<String>()
+    private var inventoriesArray = listOf<Inventory>()
 
     override fun onResume() {
         super.onResume()
-        Thread {
-            val alsoArchived: Boolean = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).getBoolean(resources.getString(R.string.show_archived), false)
-            inventoriesLiveData.postValue(DatabaseSingleton.getInstance(this).InventoriesDAO().findAll(alsoArchived))
-        }.start()
+        loadInventoriesList()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,25 +50,21 @@ class MainActivity : AppCompatActivity() {
         // Create the observer which updates the UI.
         val inventoriesObserver = Observer<List<Inventory>> { inventoryList ->
             // Update the UI, in this case, a TextView.
-            labelsArray.clear()
-            inventoryList.forEach {
-                labelsArray.add(it.name)
-            }
-            listView.adapter = ProjectAdapter(this)
+            inventoriesArray = inventoryList
+            listView.adapter = InventoryAdapter(this, inventoriesArray)
         }
 
         inventoriesLiveData.observe(this, inventoriesObserver)
 
         listView.setOnItemClickListener { parent, view, position, id ->
-            val element = listView.adapter.getItem(position)
+            val element = listView.adapter.getItem(position) as Inventory
 
             val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
-                val inventoryName = labelsArray[position]
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         // przejscie do widoku projektu
                         val intent = Intent(this, PartsListActivity::class.java)
-                        intent.putExtra("inventoryName", inventoryName)
+                        intent.putExtra("inventoryName", element.name)
                         startActivity(intent)
                     }
                     DialogInterface.BUTTON_NEGATIVE -> {
@@ -83,15 +73,15 @@ class MainActivity : AppCompatActivity() {
                                 DialogInterface.BUTTON_POSITIVE -> {
                                     // Archiwizacja/dearchiwizacja projektu
                                     Thread {
-                                        DatabaseSingleton.getInstance(this).InventoriesDAO().changeArchiveStatus(inventoryName)
-                                        onResume()
+                                        DatabaseSingleton.getInstance(this).InventoriesDAO().changeArchiveStatus(element.name)
+                                        loadInventoriesList()
                                     }.start()
                                 }
                             }
                         }
 
                         val builder = AlertDialog.Builder(this)
-                        builder.setMessage("Are you sure you want to archive this project")
+                        builder.setMessage( if (element.active == 1) getString(R.string.archive_message) else getString(R.string.dearchive_message))
                             .setPositiveButton("Yes", dialogClickListener)
                             .setNegativeButton("No", dialogClickListener).show()
                     }
@@ -99,11 +89,16 @@ class MainActivity : AppCompatActivity() {
             }
 
             val builder = AlertDialog.Builder(this)
-            if (element != null) {
-                builder.setMessage(element.toString())
-                    .setPositiveButton("OPEN", dialogClickListener)
-                    .setNegativeButton("ARCHIVE", dialogClickListener).show()
-            }
+            builder.setMessage(element.name)
+                .setPositiveButton("OPEN", dialogClickListener)
+                .setNegativeButton("ARCHIVE", dialogClickListener).show()
         }
+    }
+
+    fun loadInventoriesList() {
+        Thread {
+            val alsoArchived: Boolean = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).getBoolean(resources.getString(R.string.show_archived), false)
+            inventoriesLiveData.postValue(DatabaseSingleton.getInstance(this).InventoriesDAO().findAll(alsoArchived))
+        }.start()
     }
 }

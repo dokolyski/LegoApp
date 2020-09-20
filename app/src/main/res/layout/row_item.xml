@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView_top"
+        android:id="@+id/inventoryRowName"
         android:layout_width="251dp"
         android:layout_height="18dp"
         android:layout_marginStart="10dp"
@@ -18,13 +18,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView_down"
+        android:id="@+id/inventoryRowCode"
         android:layout_width="251dp"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:text="ROW"
-        app:layout_constraintStart_toStartOf="@+id/textView_top"
-        app:layout_constraintTop_toBottomOf="@+id/textView_top" />
+        app:layout_constraintStart_toStartOf="@+id/inventoryRowName"
+        app:layout_constraintTop_toBottomOf="@+id/inventoryRowName" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -42,7 +42,7 @@
         android:layout_marginTop="8dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/textView_down">
+        app:layout_constraintTop_toBottomOf="@+id/inventoryRowCode">
 
         <Button
             android:id="@+id/decrease"
@@ -71,14 +71,14 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView_maxElements"
+        android:id="@+id/inventoryRowLastAccessLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
         android:text="of 10"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="@+id/textView_down"
-        app:layout_constraintTop_toBottomOf="@+id/textView_down" />
+        app:layout_constraintEnd_toEndOf="@+id/inventoryRowCode"
+        app:layout_constraintTop_toBottomOf="@+id/inventoryRowCode" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

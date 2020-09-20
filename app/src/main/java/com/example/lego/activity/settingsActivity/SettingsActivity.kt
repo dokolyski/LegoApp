@@ -26,8 +26,10 @@ class SettingsActivity: AppCompatActivity() {
 
         val purgeButton = findViewById<Button>(R.id.purgeDatabaseButton)
         purgeButton.setOnClickListener {
-            DatabaseSingleton.getInstance(this).InventoriesPartsDAO().deleteAll()
-            DatabaseSingleton.getInstance(this).InventoriesDAO().deleteAll()
+            Thread {
+                DatabaseSingleton.getInstance(this).InventoriesPartsDAO().deleteAll()
+                DatabaseSingleton.getInstance(this).InventoriesDAO().deleteAll()
+            }.start()
         }
     }
 

@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import com.example.lego.R
+import com.example.lego.activity.mainActivity.MainActivity
 import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.Code
 import com.example.lego.database.entity.Inventory
@@ -21,7 +22,7 @@ import java.net.URL
 import java.time.Instant
 import kotlin.jvm.Throws
 
-class DownloadXmlTask(private val activity: Activity) : AsyncTask<String, Void, String>() {
+class DownloadXmlTask(private val activity: MainActivity) : AsyncTask<String, Void, String>() {
     val inputId: String = activity.findViewById<EditText>(R.id.blockSetIdInput).editableText.toString()
     val inputName: String = activity.findViewById<EditText>(R.id.blockSetNameInput).editableText.toString()
     var broken: Boolean = false
@@ -33,13 +34,17 @@ class DownloadXmlTask(private val activity: Activity) : AsyncTask<String, Void, 
             activity.resources.getString(R.string.defaultSourceUrl)
         )
 
-        if (DatabaseSingleton.getInstance(activity.application).InventoriesDAO().checkIfExistsById(
-                inputId.toInt()
-            )) { // check is set already in database
+        inputId.toIntOrNull()?.run {
+            if (DatabaseSingleton.getInstance(activity.application).InventoriesDAO()
+                    .checkIfExistsById(this)) {
+                broken = true
+                return activity.application.resources.getString(R.string.inventory_id_repeated)
+            }
+        } ?: run {
             broken = true
-            return activity.application.resources.getString(R.string.inventory_id_repeated)
-        } else if (DatabaseSingleton.getInstance(activity.application).InventoriesDAO().checkIfExistsByName(inputName)) {
-            // check is set already in database
+            return activity.application.resources.getString(R.string.inventory_id_is_not_number)
+        }
+        if (DatabaseSingleton.getInstance(activity.application).InventoriesDAO().checkIfExistsByName(inputName)) {
             broken = true
             return activity.application.resources.getString(R.string.inventory_name_repeated)
         }
@@ -62,6 +67,7 @@ class DownloadXmlTask(private val activity: Activity) : AsyncTask<String, Void, 
             // TODO show view with decision what to do next
         }
         activity.findViewById<Button>(R.id.downloadNewSetButton).isEnabled = true
+        activity.loadInventoriesList()
     }
 
     @Throws(XmlPullParserException::class, IOException::class)

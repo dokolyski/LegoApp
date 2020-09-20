@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import com.example.lego.R
 import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.InventoryPart
+import com.example.lego.xml.XMLWriter
 
 class PartsListActivity : AppCompatActivity() {
     private val inventoriesPartsLiveData: MutableLiveData<List<LayoutRowData>> by lazy {
@@ -41,12 +42,15 @@ class PartsListActivity : AppCompatActivity() {
             val databaseSingleton: DatabaseSingleton = DatabaseSingleton.getInstance(this)
             val codeInventory: Int? = databaseSingleton.InventoriesDAO().findIdByName(inventoryName)
             if (codeInventory != null) {
-                databaseSingleton.InventoriesDAO().updateLastAccessTime(inventoryName)
                 val inventoryPartsList: List<InventoryPart> = databaseSingleton.InventoriesPartsDAO().findAllByInventoryId(codeInventory)
                 inventoriesPartsLiveData.postValue(inventoryPartsList.map { LayoutRowData(this, it) })
             } else {
                 throw Throwable("Inventory not found")
             }
         }.start()
+    }
+
+    fun saveChanges() {
+
     }
 }

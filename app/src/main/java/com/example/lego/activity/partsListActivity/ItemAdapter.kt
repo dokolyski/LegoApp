@@ -24,7 +24,7 @@ class ItemAdapter(
 
         val increase = rowView.findViewById<Button>(R.id.increase)
         val decrease = rowView.findViewById<Button>(R.id.decrease)
-        val maxNumber = rowView.findViewById<TextView>(R.id.textView_maxElements)
+        val maxNumber = rowView.findViewById<TextView>(R.id.inventoryRowLastAccessLabel)
 
         increase.setOnClickListener {
             val listItem = it.parent as LinearLayout
@@ -33,7 +33,7 @@ class ItemAdapter(
                 if (child.id == R.id.integer_number) {
                     if( (child as TextView).text.toString().toInt() != maxNumber.text.toString().toInt()) {
                         increaseInteger(child)
-                        if ( (child as TextView).text.toString().toInt() == maxNumber.text.toString().toInt())
+                        if ( child.text.toString().toInt() == maxNumber.text.toString().toInt())
                             (listItem.parent as ConstraintLayout).setBackgroundColor(Color.CYAN)
                     }
                 }
@@ -46,12 +46,11 @@ class ItemAdapter(
                 if (child.id == R.id.integer_number) {
                     if( (child as TextView).text.toString().toInt() > 0)
                         decreaseInteger(child)
-                        if ( (child as TextView).text.toString().toInt() != maxNumber.text.toString().toInt())
+                        if ( child.text.toString().toInt() != maxNumber.text.toString().toInt())
                             (listItem.parent as ConstraintLayout).setBackgroundColor(Color.WHITE)
                 }
             }
         }
-
         return rowView
     }
 
@@ -80,10 +79,10 @@ class ItemAdapter(
     }
 
     private fun fillLayout(rowView: View, data: LayoutRowData) {
-        val maxElements: TextView = rowView.findViewById(R.id.textView_maxElements)
+        val maxElements: TextView = rowView.findViewById(R.id.inventoryRowLastAccessLabel)
         val itemsNumberElement: TextView = rowView.findViewById(R.id.integer_number)
-        val mainLabel: TextView = rowView.findViewById(R.id.textView_top)
-        val descriptionLabel: TextView = rowView.findViewById(R.id.textView_down)
+        val mainLabel: TextView = rowView.findViewById(R.id.inventoryRowName)
+        val descriptionLabel: TextView = rowView.findViewById(R.id.inventoryRowCode)
         val imageView: ImageView = rowView.findViewById(R.id.imageView)
 
         maxElements.text = data.quantityInSet
