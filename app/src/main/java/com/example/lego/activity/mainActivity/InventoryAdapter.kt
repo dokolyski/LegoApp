@@ -15,7 +15,7 @@ import java.util.*
 
 class InventoryAdapter(
     private val context: Context,
-    private val inventories: List<Inventory>,
+    private val inventories: MutableList<Inventory>,
 ) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val layoutInflater = LayoutInflater.from(context)

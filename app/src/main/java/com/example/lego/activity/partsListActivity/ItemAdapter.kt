@@ -14,6 +14,7 @@ class ItemAdapter(
     private val context: Context,
     private val items: List<LayoutRowData>,
 ) : BaseAdapter() {
+    private val completedColor = Color.GREEN
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val layoutInflater = LayoutInflater.from(context)
@@ -24,58 +25,26 @@ class ItemAdapter(
 
         val increase = rowView.findViewById<Button>(R.id.increase)
         val decrease = rowView.findViewById<Button>(R.id.decrease)
-        val maxNumber = rowView.findViewById<TextView>(R.id.inventoryRowLastAccessLabel)
 
         increase.setOnClickListener {
-            val listItem = it.parent as LinearLayout
-            for (i: Int in 0 until listItem.childCount) {
-                val child: View = listItem[i]
-                if (child.id == R.id.integer_number) {
-                    if( (child as TextView).text.toString().toInt() != maxNumber.text.toString().toInt()) {
-                        increaseInteger(child)
-                        if ( child.text.toString().toInt() == maxNumber.text.toString().toInt())
-                            (listItem.parent as ConstraintLayout).setBackgroundColor(Color.CYAN)
-                    }
-                }
-            }
+            changePartsQuantity(1, it, position)
         }
         decrease.setOnClickListener {
-            val listItem = it.parent as LinearLayout
-            for (i: Int in 0 until listItem.childCount) {
-                val child: View = listItem[i]
-                if (child.id == R.id.integer_number) {
-                    if( (child as TextView).text.toString().toInt() > 0)
-                        decreaseInteger(child)
-                        if ( child.text.toString().toInt() != maxNumber.text.toString().toInt())
-                            (listItem.parent as ConstraintLayout).setBackgroundColor(Color.WHITE)
-                }
-            }
+            changePartsQuantity(-1, it, position)
         }
         return rowView
     }
 
     override fun getItem(position: Int): Any {
-        return "TEST"
+        return items[position].quantityInStore
     }
 
     override fun getItemId(position: Int): Long {
-        return position.toLong()
+        return items[position].id.toLong()
     }
 
     override fun getCount(): Int {
         return items.size
-    }
-
-    fun increaseInteger(number: TextView) {
-        display(number, number.text.toString().toInt() + 1)
-    }
-
-    fun decreaseInteger(number: TextView) {
-        display(number, number.text.toString().toInt() - 1)
-    }
-
-    private fun display(number: TextView, newNumber: Int) {
-        number.setText("$newNumber")
     }
 
     private fun fillLayout(rowView: View, data: LayoutRowData) {
@@ -85,14 +54,32 @@ class ItemAdapter(
         val descriptionLabel: TextView = rowView.findViewById(R.id.inventoryRowCode)
         val imageView: ImageView = rowView.findViewById(R.id.imageView)
 
-        maxElements.text = data.quantityInSet
-        itemsNumberElement.text = data.quantityInStore
+        maxElements.text = data.quantityInSet.toString()
+        itemsNumberElement.text = data.quantityInStore.toString()
         mainLabel.text = data.title
         descriptionLabel.text = data.description
         imageView.setImageBitmap(data.imageBitmap)
 
         if( (data.quantityInSet == data.quantityInStore)){
-            (maxElements.parent as ConstraintLayout).setBackgroundColor(Color.CYAN)
+            (maxElements.parent as ConstraintLayout).setBackgroundColor(completedColor)
+        }
+    }
+
+    private fun changePartsQuantity(change: Int, clickedButton: View, position: Int) {
+        val listItem = clickedButton.parent as LinearLayout
+        for (i: Int in 0 until listItem.childCount) {
+            val child: View = listItem[i]
+            if (child.id == R.id.integer_number) {
+                val newQuantity: Int = items[position].quantityInStore + change
+                if( 0 <= newQuantity && newQuantity <= items[position].quantityInSet) {
+                    items[position].quantityInStore = newQuantity
+                    (child as TextView).text = "$newQuantity"
+                    if ( newQuantity == items[position].quantityInSet)
+                        (listItem.parent as ConstraintLayout).setBackgroundColor(completedColor)
+                    else
+                        (listItem.parent as ConstraintLayout).setBackgroundColor(Color.WHITE)
+                }
+            }
         }
     }
 

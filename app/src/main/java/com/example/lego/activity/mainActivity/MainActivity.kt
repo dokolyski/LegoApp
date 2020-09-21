@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     private val inventoriesLiveData: MutableLiveData<List<Inventory>> by lazy {
         MutableLiveData<List<Inventory>>()
     }
-    private var inventoriesArray = listOf<Inventory>()
+    private var inventoriesMutableList = mutableListOf<Inventory>()
 
     override fun onResume() {
         super.onResume()
@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         val addNewProjectButton = findViewById<Button>(R.id.downloadNewSetButton)
         addNewProjectButton.setOnClickListener {
+            // TODO - kółko zaczyna się kręcić, cały layout jest disabled
             addNewProjectButton.isEnabled = false
             DownloadXmlTask(this).execute()
         }
@@ -50,8 +51,9 @@ class MainActivity : AppCompatActivity() {
         // Create the observer which updates the UI.
         val inventoriesObserver = Observer<List<Inventory>> { inventoryList ->
             // Update the UI, in this case, a TextView.
-            inventoriesArray = inventoryList
-            listView.adapter = InventoryAdapter(this, inventoriesArray)
+            inventoriesMutableList = inventoryList.toMutableList()
+            inventoriesMutableList.sortByDescending { it.lastAccess }
+            listView.adapter = InventoryAdapter(this, inventoriesMutableList)
         }
 
         inventoriesLiveData.observe(this, inventoriesObserver)

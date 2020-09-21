@@ -10,14 +10,16 @@ class LayoutRowData(
     context: Context,
     item: InventoryPart
 ) {
+    var id: Int
     var title: String
     var description: String
     var imageBitmap: Bitmap?
-    var quantityInStore: String
-    var quantityInSet: String
+    var quantityInStore: Int
+    var quantityInSet: Int
 
     init {
         val databaseSingleton: DatabaseSingleton = DatabaseSingleton.getInstance(context)
+        id = item.id
         title = databaseSingleton.PartsDAO().findById(item.itemID)?.let {
             it.namePL ?: it.name
         } ?: ""
@@ -31,7 +33,7 @@ class LayoutRowData(
             } ?: databaseSingleton.CodesDAO().findByItemId(item.itemID)?.image?.let {
             BitmapFactory.decodeByteArray(it, 0, it.size)
         }
-        quantityInStore = item.QuantityInStore.toString()
-        quantityInSet = item.quantityInSet.toString()
+        quantityInStore = item.QuantityInStore
+        quantityInSet = item.quantityInSet
     }
 }

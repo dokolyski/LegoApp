@@ -66,6 +66,7 @@ class DownloadXmlTask(private val activity: MainActivity) : AsyncTask<String, Vo
         } else {
             // TODO show view with decision what to do next
         }
+//        TODO - kółko przestaje się kręcić, layout jest z powrotem klikalny, można wtedy usunąć isEnabled dla samego przycisku (m.in. poniżej)
         activity.findViewById<Button>(R.id.downloadNewSetButton).isEnabled = true
         activity.loadInventoriesList()
     }
@@ -74,6 +75,7 @@ class DownloadXmlTask(private val activity: MainActivity) : AsyncTask<String, Vo
     private fun loadXmlFromNetwork(urlString: String, inventoryId: String, inventoryName: String) : String {
         val parts: HashMap<String, List<*>>? = downloadFromUrl(urlString)?.use(XMLParser(activity.application)::parse)
         if (parts != null) {
+            // TODO - sprawdzić czemu są duplikaty i niezgadzają się kolory (drugie miejsce)
             DatabaseSingleton.getInstance(activity.applicationContext).InventoriesDAO().insert(
                 Inventory(
                     inventoryId.toInt(),
