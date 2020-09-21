@@ -1,13 +1,17 @@
 package com.example.lego.xml
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.AsyncTask
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import com.example.lego.R
 import com.example.lego.activity.mainActivity.MainActivity
+import com.example.lego.activity.partsListActivity.PartsListActivity
 import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.Code
 import com.example.lego.database.entity.Inventory
@@ -16,6 +20,7 @@ import com.example.lego.xml.exceptions.PartNotFound
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import java.io.InputStream
+import java.lang.Exception
 import java.lang.NullPointerException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -61,10 +66,23 @@ class DownloadXmlTask(private val activity: MainActivity) : AsyncTask<String, Vo
 
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
+
+        val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
+            val intent = Intent(activity, PartsListActivity::class.java)
+            intent.putExtra("inventoryName", inputName)
+            activity.startActivity(intent)
+        }
+
         if (broken) {
             // TODO show error
+            val builder = AlertDialog.Builder(activity)
+            builder.setMessage("Error during creating a project").setPositiveButton("OK", null ).show()
         } else {
             // TODO show view with decision what to do next
+            val builder = AlertDialog.Builder(activity)
+            builder.setMessage("Project created")
+                .setPositiveButton("Go to project", dialogClickListener )
+                .setNegativeButton("Bact to menu", null).show()
         }
 //        TODO - kółko przestaje się kręcić, layout jest z powrotem klikalny, można wtedy usunąć isEnabled dla samego przycisku (m.in. poniżej)
         activity.findViewById<Button>(R.id.downloadNewSetButton).isEnabled = true
