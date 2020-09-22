@@ -9,6 +9,8 @@ import android.os.AsyncTask
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
+import androidx.core.view.isVisible
 import com.example.lego.R
 import com.example.lego.activity.mainActivity.MainActivity
 import com.example.lego.activity.partsListActivity.PartsListActivity
@@ -74,17 +76,20 @@ class DownloadXmlTask(private val activity: MainActivity) : AsyncTask<String, Vo
         }
 
         if (broken) {
-            // TODO show error
+            // show error
             val builder = AlertDialog.Builder(activity)
             builder.setMessage("Error during creating a project").setPositiveButton("OK", null ).show()
         } else {
-            // TODO show view with decision what to do next
+            // show view with decision what to do next
             val builder = AlertDialog.Builder(activity)
             builder.setMessage("Project created")
                 .setPositiveButton("Go to project", dialogClickListener )
                 .setNegativeButton("Bact to menu", null).show()
         }
-//        TODO - kółko przestaje się kręcić, layout jest z powrotem klikalny, można wtedy usunąć isEnabled dla samego przycisku (m.in. poniżej)
+//        TODO - layout jest z powrotem klikalny, można wtedy usunąć isEnabled dla samego przycisku (m.in. poniżej)
+        val progressBar: ProgressBar = activity.findViewById(R.id.projectLoadProgressBar)
+        progressBar.isVisible = false
+
         activity.findViewById<Button>(R.id.downloadNewSetButton).isEnabled = true
         activity.loadInventoriesList()
     }

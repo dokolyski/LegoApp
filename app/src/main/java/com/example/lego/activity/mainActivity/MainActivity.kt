@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.text.Layout
 import android.widget.Button
 import android.widget.ListView
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.lego.R
@@ -32,10 +35,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val progressBar: ProgressBar = findViewById(R.id.projectLoadProgressBar)
+        progressBar.isVisible = false
 
         val addNewProjectButton = findViewById<Button>(R.id.downloadNewSetButton)
         addNewProjectButton.setOnClickListener {
-            // TODO - kółko zaczyna się kręcić, cały layout jest disabled
+            // TODO - cały layout jest disabled
+
+            progressBar.isVisible = true
+
             addNewProjectButton.isEnabled = false
             DownloadXmlTask(this).execute()
         }
