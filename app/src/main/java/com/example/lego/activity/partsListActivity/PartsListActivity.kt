@@ -41,12 +41,13 @@ class PartsListActivity : AppCompatActivity() {
             listView.adapter = ItemAdapter(this, it)
 
             findViewById<FloatingActionButton>(R.id.exportMissingPartsButton).setOnClickListener {
+                val partsListWithActualQuantityInStore = getIdToQuantityMap()
                 Thread {
                     val inventoryId = DatabaseSingleton.getInstance(this).InventoriesDAO().findIdByName(inventoryName)
                     if (inventoryId != null) {
-                        // XMLWriter.writeXML(inventoryId, )
-//                        TODO - export XML'a, dodać funkcję wyciągającą listę klocków z aktualnymi ilościami
-//                         (to samo co w save changes tylko bez zapisywania zmian)
+                        getPartsListWithActual(partsListWithActualQuantityInStore, false)?.let {partsList ->
+                            XMLWriter.writeXML(inventoryId, partsList,this)
+                        }
                     }
                 }.start()
             }
@@ -77,22 +78,34 @@ class PartsListActivity : AppCompatActivity() {
     }
 
     private fun saveChanges() {
+        val partsListWithActualQuantityInStore = getIdToQuantityMap()
+        Thread {
+            getPartsListWithActual(partsListWithActualQuantityInStore, true)
+        }.start()
+    }
+
+    private fun getIdToQuantityMap(): MutableMap<Int, Int> {
         val listView = findViewById<ListView>(R.id.partsListView)
         val partsListWithActualQuantityInStore = mutableMapOf<Int, Int>()
         for (i in 0 until listView.adapter.count) {
             partsListWithActualQuantityInStore[listView.adapter.getItemId(i).toInt()] = listView.adapter.getItem(i) as Int
         }
-        Thread {
-            val databaseSingleton: DatabaseSingleton = DatabaseSingleton.getInstance(this)
-            databaseSingleton.InventoriesDAO().findIdByName(inventoryName)?.let {inventoryId ->
-                val codeInventory: List<InventoryPart> = databaseSingleton.InventoriesPartsDAO().findAllByInventoryId(inventoryId)
-                val resultList = mutableListOf<InventoryPart>()
-                codeInventory.forEach {
-                    resultList.add(InventoryPart(it.id, it.inventoryID, it.typeID, it.itemID,
-                        it.quantityInSet, partsListWithActualQuantityInStore[it.id]!!, it.colorId, it.extra))
-                }
+        return partsListWithActualQuantityInStore
+    }
+
+    private fun getPartsListWithActual(partsListWithActualQuantityInStore: MutableMap<Int, Int>, withUpdate: Boolean): List<InventoryPart>? {
+        val databaseSingleton: DatabaseSingleton = DatabaseSingleton.getInstance(this)
+        return databaseSingleton.InventoriesDAO().findIdByName(inventoryName)?.let { inventoryId ->
+            val codeInventory: List<InventoryPart> = databaseSingleton.InventoriesPartsDAO().findAllByInventoryId(inventoryId)
+            val resultList = mutableListOf<InventoryPart>()
+            codeInventory.forEach {
+                resultList.add(InventoryPart(it.id, it.inventoryID, it.typeID, it.itemID,
+                    it.quantityInSet, partsListWithActualQuantityInStore[it.id]!!, it.colorId, it.extra))
+            }
+            if (withUpdate) {
                 databaseSingleton.InventoriesPartsDAO().update(resultList)
             }
-        }.start()
+            resultList
+        }
     }
 }

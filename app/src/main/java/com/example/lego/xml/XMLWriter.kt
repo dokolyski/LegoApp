@@ -35,6 +35,7 @@ class XMLWriter {
                     rootElement.appendChild(itemElement)
                 }
             }
+            doc.appendChild(rootElement)
 
             val transformer: Transformer = TransformerFactory.newInstance().newTransformer()
 
@@ -44,8 +45,10 @@ class XMLWriter {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
             // ==== End: Pretty print
 
+//            context.getExternalFilesDirs()
             context.getExternalFilesDir(null)?.let { dir ->
-                transformer.transform(DOMSource(doc), StreamResult(File("${dir.path}/$inventoryNo")))
+                val file = File(dir.path, "$inventoryNo.xml")
+                transformer.transform(DOMSource(doc), StreamResult(file))
             } ?: throw Exception(R.string.sd_not_found.toString())
 
             // todo - show error message instead of throwing error
