@@ -8,7 +8,7 @@ import com.example.lego.database.entity.InventoryPart
 
 class LayoutRowData(
     context: Context,
-    item: InventoryPart
+    item: InventoryPart,
 ) {
     var id: Int
     var title: String
@@ -30,9 +30,7 @@ class LayoutRowData(
         imageBitmap = databaseSingleton.CodesDAO()
             .findByItemIdAndColorId(item.itemID, item.colorId)?.image?.let {
                 BitmapFactory.decodeByteArray(it, 0, it.size)
-            } ?: databaseSingleton.CodesDAO().findByItemId(item.itemID)?.image?.let {
-            BitmapFactory.decodeByteArray(it, 0, it.size)
-        }
+            }
         quantityInStore = item.QuantityInStore
         quantityInSet = item.quantityInSet
     }

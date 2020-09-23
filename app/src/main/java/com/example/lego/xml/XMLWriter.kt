@@ -3,6 +3,7 @@ package com.example.lego.xml
 import android.app.Activity
 import android.app.AlertDialog
 import com.example.lego.R
+import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.InventoryPart
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -20,6 +21,7 @@ class XMLWriter {
         fun writeXML(inventoryNo: Int, partsList: List<InventoryPart>, context: Activity) {
             val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
             val doc: Document = docBuilder.newDocument()
+            val databaseSingleton = DatabaseSingleton.getInstance(context)
 
             // Create the root node
             val rootElement: Element =  doc.createElement("INVENTORY")
@@ -29,8 +31,8 @@ class XMLWriter {
                 if (missingPartsNumber > 0) {
                     val itemElement: Element =  doc.createElement("ITEM")
                     itemElement.setAttribute("ITEMTYPE", "P")
-                    itemElement.setAttribute("ITEMID", it.itemID.toString())
-                    itemElement.setAttribute("COLOR", it.colorId.toString())
+                    itemElement.setAttribute("ITEMID", databaseSingleton.PartsDAO().findCodeById(it.itemID).toString())
+                    itemElement.setAttribute("COLOR", databaseSingleton.ColorsDAO().findCodeById(it.colorId).toString())
                     itemElement.setAttribute("QTYFILLED", missingPartsNumber.toString())
                     rootElement.appendChild(itemElement)
                 }

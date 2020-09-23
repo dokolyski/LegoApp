@@ -29,6 +29,7 @@ class SettingsActivity: AppCompatActivity() {
             Thread {
                 DatabaseSingleton.getInstance(this).InventoriesPartsDAO().deleteAll()
                 DatabaseSingleton.getInstance(this).InventoriesDAO().deleteAll()
+                DatabaseSingleton.getInstance(this).CodesDAO().deleteAllImages()
             }.start()
         }
     }
