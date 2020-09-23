@@ -42,11 +42,12 @@ class PartsListActivity : AppCompatActivity() {
 
             findViewById<FloatingActionButton>(R.id.exportMissingPartsButton).setOnClickListener {
                 val partsListWithActualQuantityInStore = getIdToQuantityMap()
+                val context = this
                 Thread {
-                    val inventoryId = DatabaseSingleton.getInstance(this).InventoriesDAO().findIdByName(inventoryName)
+                    val inventoryId = DatabaseSingleton.getInstance(context).InventoriesDAO().findIdByName(inventoryName)
                     if (inventoryId != null) {
                         getPartsListWithActual(partsListWithActualQuantityInStore, false)?.let {partsList ->
-                            XMLWriter.writeXML(inventoryId, partsList,this)
+                            XMLWriter.writeXML(inventoryId, partsList, context)
                         }
                     }
                 }.start()

@@ -1,12 +1,12 @@
 package com.example.lego.xml
 
-import android.content.Context
+import android.app.Activity
+import android.app.AlertDialog
 import com.example.lego.R
 import com.example.lego.database.entity.InventoryPart
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
-import java.lang.Exception
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
@@ -17,7 +17,7 @@ import javax.xml.transform.stream.StreamResult
 
 class XMLWriter {
     companion object {
-        fun writeXML(inventoryNo: Int, partsList: List<InventoryPart>, context: Context) {
+        fun writeXML(inventoryNo: Int, partsList: List<InventoryPart>, context: Activity) {
             val docBuilder: DocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
             val doc: Document = docBuilder.newDocument()
 
@@ -46,12 +46,15 @@ class XMLWriter {
             // ==== End: Pretty print
 
 //            context.getExternalFilesDirs()
-            context.getExternalFilesDir(null)?.let { dir ->
+            val message = context.getExternalFilesDir(null)?.let { dir ->
                 val file = File(dir.path, "$inventoryNo.xml")
                 transformer.transform(DOMSource(doc), StreamResult(file))
-            } ?: throw Exception(R.string.sd_not_found.toString())
-
-            // todo - show error message instead of throwing error
+                context.getString(R.string.export_OK_with_path) + file.path
+            } ?: context.getString(R.string.export_ERROR)
+            context.runOnUiThread {
+                val builder = AlertDialog.Builder(context)
+                builder.setMessage(message).setPositiveButton("OK", null ).show()
+            }
         }
     }
 }
