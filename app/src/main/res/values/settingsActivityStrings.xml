@@ -4,4 +4,6 @@
     <string name="source_url">sourceUrl</string>
     <string name="show_archived">showArchived</string>
     <string name="defaultSourceUrl">http://fcds.cs.put.poznan.pl/MyWeb/BL/</string>
+    <string name="url_prefix">Prefix of URL:</string>
+    <string name="archived_switch_label">Show archived</string>
 </resources>
