@@ -1,16 +1,11 @@
 package com.example.lego.xml
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.AsyncTask
-import android.util.Log
-import android.widget.Button
 import android.widget.EditText
-import android.widget.ProgressBar
-import androidx.core.view.isVisible
 import com.example.lego.R
 import com.example.lego.activity.mainActivity.MainActivity
 import com.example.lego.activity.partsListActivity.PartsListActivity
@@ -22,18 +17,17 @@ import com.example.lego.xml.exceptions.PartNotFound
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import java.io.InputStream
-import java.lang.NullPointerException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.Instant
-import kotlin.jvm.Throws
 
 class DownloadXmlTask(private val activity: MainActivity) : AsyncTask<String, Void, String>() {
-    val inputId: String =
+    private val inputId: String =
         activity.findViewById<EditText>(R.id.blockSetIdInput).editableText.toString()
-    val inputName: String =
+    private val inputName: String =
         activity.findViewById<EditText>(R.id.blockSetNameInput).editableText.toString()
     var broken: Boolean = false
+    private val imageSourceURL: String = "https://www.bricklink.com"
 
     override fun doInBackground(vararg urls: String): String {
         val sharedPref =
@@ -90,14 +84,10 @@ class DownloadXmlTask(private val activity: MainActivity) : AsyncTask<String, Vo
             // show view with decision what to do next
             val builder = AlertDialog.Builder(activity)
             builder.setMessage(result)
-                .setPositiveButton("Go to project", dialogClickListener)
-                .setNegativeButton("Bact to menu", null).show()
+                .setPositiveButton("Open project", dialogClickListener)
+                .setNegativeButton("Go back to menu", null).show()
         }
-//        TODO - layout jest z powrotem klikalny, można wtedy usunąć isEnabled dla samego przycisku (m.in. poniżej)
-        val progressBar: ProgressBar = activity.findViewById(R.id.projectLoadProgressBar)
-        progressBar.isVisible = false
-
-        activity.findViewById<Button>(R.id.downloadNewSetButton).isEnabled = true
+        activity.unblockUI()
         activity.loadInventoriesList()
     }
 
@@ -110,7 +100,6 @@ class DownloadXmlTask(private val activity: MainActivity) : AsyncTask<String, Vo
         val parts: HashMap<String, List<*>>? =
             downloadFromUrl(urlString)?.use(XMLParser(activity.application)::parse)
         if (parts != null) {
-            // TODO - sprawdzić czemu są duplikaty i niezgadzają się kolory (drugie miejsce)
             DatabaseSingleton.getInstance(activity.applicationContext).InventoriesDAO().insert(
                 Inventory(
                     inventoryId.toInt(),
@@ -146,14 +135,12 @@ class DownloadXmlTask(private val activity: MainActivity) : AsyncTask<String, Vo
             connectTimeout = 15000
             requestMethod = "GET"
             doInput = true
-            // Starts the query
             connect()
             inputStream
         }
     }
 
     private fun saveImage(part: InventoryPart, context: Context) {
-        // code jest rekordem w tabeli Code gdzie trzymamy obrazki
         val databaseSingleton = DatabaseSingleton.getInstance(context)
         val partCode = databaseSingleton.PartsDAO().findCodeById(part.itemID)
         val colorCode = databaseSingleton.ColorsDAO().findCodeById(part.colorId)
@@ -163,40 +150,30 @@ class DownloadXmlTask(private val activity: MainActivity) : AsyncTask<String, Vo
         )?.let { code: Code ->
             if (partCode != null) {
                 val imageURL =
-                    if (colorCode != null) "https://www.bricklink.com/P/$colorCode/$partCode.jpg"
-                    else "https://www.bricklink.com/PL/$partCode.jpg"
+                    if (colorCode != null) "$imageSourceURL/P/$colorCode/$partCode.jpg"
+                    else "$imageSourceURL/PL/$partCode.jpg"
                 if (code.image == null) {
-                    try {
-                        code.image = downloadImage(imageURL)
-                        DatabaseSingleton.getInstance(context).CodesDAO().updateCode(code)
-                    } catch (e: IOException) {
-                        //image not found
-                    }
+                    code.image = downloadImage(imageURL)
+                    DatabaseSingleton.getInstance(context).CodesDAO().updateCode(code)
                 }
             }
         } ?: run {
             if (partCode != null) {
                 val imageURL =
-                    if (colorCode != null) "https://www.bricklink.com/P/$colorCode/$partCode.jpg"
-                    else "https://www.bricklink.com/PL/$partCode.jpg"
-                var image: ByteArray? = null
-                try {
-                    image = downloadImage(imageURL)
-                } catch (e: IOException) {
-                    //image not found
-                }
+                    if (colorCode != null) "$imageSourceURL/P/$colorCode/$partCode.jpg"
+                    else "$imageSourceURL/PL/$partCode.jpg"
                 DatabaseSingleton.getInstance(context).CodesDAO()
-                    .insertNewCode(Code(0, part.itemID, part.colorId, null, image))
+                    .insertNewCode(Code(0,
+                        part.itemID,
+                        part.colorId,
+                        null,
+                        downloadImage(imageURL)))
             }
         }
     }
 
-    @Throws(IOException::class)
-    private fun downloadImage(url: String): ByteArray {
-        downloadFromUrl(url)?.use {
-            return it.readBytes()
-        }
-        throw IOException("Cannot found image for this part")
+    private fun downloadImage(url: String): ByteArray? {
+        return downloadFromUrl(url)?.readBytes()
     }
 
     private fun concatMessageWithInfoAboutNotFoundParts(

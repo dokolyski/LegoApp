@@ -12,4 +12,6 @@
     <string name="dearchive_message">Are you sure you want to DEARCHIVE this project?</string>
     <string name="export_OK_with_path">Missing parts file was successfully exported to your device memory. Filepath: </string>
     <string name="export_ERROR">Missing parts file export ended with error. File was not created.</string>
+    <string name="purge_message">Are you sure you want to remove all existing projects and their data?</string>
+    <string name="select_inventory_message">%1$s (%2$s)\nWhat do you what to do with this project?</string>
 </resources>

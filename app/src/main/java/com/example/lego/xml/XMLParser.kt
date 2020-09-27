@@ -80,8 +80,6 @@ class XMLParser(application: Application) : AndroidViewModel(application) {
                 continue
             }
 
-            // TODO - sprawdzić czemu są duplikaty i niezgadzają się kolory (pierwsze miejsce)
-
             when(tagName) {
                 "QTY" -> part.quantityInSet = parser.text.toInt()
                 "QTYFILLED" -> part.quantityInStore = parser.text.toInt()

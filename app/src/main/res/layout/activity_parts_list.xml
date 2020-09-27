@@ -19,19 +19,6 @@
 
     </ListView>
 
-    <TextView
-        android:id="@+id/textView_title"
-        android:layout_width="300dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/partsListTitle"
-        android:textColor="#5C97D6"
-        android:textSize="25sp"
-        app:layout_constraintEnd_toStartOf="@+id/exportMissingPartsButton"
-        app:layout_constraintHorizontal_bias="0.313"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ProgressBar
         android:id="@+id/listLoadProgressBar"
         style="?android:attr/progressBarStyle"
@@ -46,12 +33,24 @@
         android:id="@+id/exportMissingPartsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="16dp"
         android:clickable="true"
         app:layout_constraintBottom_toTopOf="@+id/partsListView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.238"
+        app:layout_constraintVertical_bias="0.333"
         app:srcCompat="@drawable/export" />
+
+    <TextView
+        android:id="@+id/textView_title"
+        android:layout_width="300dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="24dp"
+        android:textColor="@android:color/black"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toStartOf="@+id/exportMissingPartsButton"
+        app:layout_constraintHorizontal_bias="0.41"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

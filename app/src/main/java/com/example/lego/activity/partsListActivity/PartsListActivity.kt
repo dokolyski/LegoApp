@@ -23,7 +23,7 @@ class PartsListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about_project)
+        setContentView(R.layout.activity_parts_list)
 
         listView = findViewById(R.id.partsListView)
 
@@ -33,8 +33,6 @@ class PartsListActivity : AppCompatActivity() {
         val title = findViewById<TextView>(R.id.textView_title)
         inventoryName = intent.getStringExtra("inventoryName")
             ?: throw Throwable("InventoryName not passed")
-
-        title.text = inventoryName
 
         val partsObserver = Observer<List<LayoutRowData>> {
             progressBar.isVisible = false
@@ -61,6 +59,9 @@ class PartsListActivity : AppCompatActivity() {
             databaseSingleton.InventoriesDAO().updateLastAccessTime(inventoryName)
             val codeInventory: Int? = databaseSingleton.InventoriesDAO().findIdByName(inventoryName)
             if (codeInventory != null) {
+                runOnUiThread {
+                    title.text = getString(R.string.partsListTitle, inventoryName, codeInventory.toString())
+                }
                 val inventoryPartsList: List<InventoryPart> = databaseSingleton.InventoriesPartsDAO().findAllByInventoryId(
                     codeInventory)
                 inventoriesPartsLiveData.postValue(inventoryPartsList.map {

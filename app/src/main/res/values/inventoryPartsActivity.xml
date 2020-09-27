@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="partsListTitle">Inventory Name (number)</string>
+    <string name="partsListTitle">Parts list of %1$s (%2$s)</string>
 </resources>

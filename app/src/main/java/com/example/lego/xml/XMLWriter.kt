@@ -47,7 +47,6 @@ class XMLWriter {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
             // ==== End: Pretty print
 
-//            context.getExternalFilesDirs()
             val message = context.getExternalFilesDir(null)?.let { dir ->
                 val file = File(dir.path, "$inventoryNo.xml")
                 transformer.transform(DOMSource(doc), StreamResult(file))

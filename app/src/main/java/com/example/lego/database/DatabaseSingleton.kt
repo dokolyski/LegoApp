@@ -7,31 +7,24 @@ import androidx.room.RoomDatabase
 import com.example.lego.database.dao.*
 import com.example.lego.database.entity.*
 
-@Database(entities = arrayOf(
-    ItemType::class,
-    Inventory::class,
-    Color::class,
-    Category::class,
-    Code::class,
-    InventoryPart::class,
-    Part::class
-), version = 4)
+@Database(entities = [ItemType::class, Inventory::class, Color::class, Category::class, Code::class, InventoryPart::class, Part::class],
+    version = 4)
 abstract class DatabaseSingleton : RoomDatabase() {
-    abstract fun ItemTypesDAO (): ItemTypesDAO
+    abstract fun ItemTypesDAO(): ItemTypesDAO
 
-    abstract fun InventoriesDAO (): InventoriesDAO
+    abstract fun InventoriesDAO(): InventoriesDAO
 
-    abstract fun ColorsDAO (): ColorsDAO
+    abstract fun ColorsDAO(): ColorsDAO
 
-    abstract fun CodesDAO (): CodesDAO
+    abstract fun CodesDAO(): CodesDAO
 
-    abstract fun InventoriesPartsDAO (): InventoriesPartsDAO
+    abstract fun InventoriesPartsDAO(): InventoriesPartsDAO
 
-    abstract fun PartsDAO (): PartsDAO
+    abstract fun PartsDAO(): PartsDAO
 
-    abstract fun CategoriesDAO (): CategoriesDAO
+    abstract fun CategoriesDAO(): CategoriesDAO
 
-    companion object{
+    companion object {
         var INSTANCE: DatabaseSingleton? = null
         fun getInstance(context: Context): DatabaseSingleton {
             if (INSTANCE == null) {

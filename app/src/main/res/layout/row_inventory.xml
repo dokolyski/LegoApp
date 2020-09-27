@@ -11,24 +11,24 @@
         android:layout_width="306dp"
         android:layout_height="24dp"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:text="12.12.1212"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.142"
-        app:layout_constraintStart_toEndOf="@+id/inventoryRowLastAccessLabel"
         app:layout_constraintTop_toBottomOf="@+id/inventoryRowName"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.001" />
 
     <TextView
         android:id="@+id/inventoryRowName"
-        android:layout_width="395dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="4dp"
+        android:layout_width="402dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="4dp"
         android:text="Nazwa Projektu"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,13 +36,15 @@
         android:id="@+id/inventoryRowLastAccessLabel"
         android:layout_width="85dp"
         android:layout_height="24dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="4dp"
         android:text="Last Access:"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/inventoryRowLastAccessValue"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inventoryRowName"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.001" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

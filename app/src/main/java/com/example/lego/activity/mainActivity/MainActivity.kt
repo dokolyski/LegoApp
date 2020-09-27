@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.ListView
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -25,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         MutableLiveData<List<Inventory>>()
     }
     private var inventoriesMutableList = mutableListOf<Inventory>()
+    private lateinit var progressBar: ProgressBar
+    private lateinit var parentView: ConstraintLayout
 
     override fun onResume() {
         super.onResume()
@@ -34,13 +38,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val progressBar: ProgressBar = findViewById(R.id.projectLoadProgressBar)
-        progressBar.isVisible = false
+
+        parentView = findViewById(R.id.parent)
+        progressBar = findViewById(R.id.projectLoadProgressBar)
+        unblockUI()
 
         val addNewProjectButton = findViewById<Button>(R.id.downloadNewSetButton)
         addNewProjectButton.setOnClickListener {
-            progressBar.isVisible = true
-            addNewProjectButton.isEnabled = false
+            blockUI()
             DownloadXmlTask(this).execute()
         }
 
@@ -62,10 +67,10 @@ class MainActivity : AppCompatActivity() {
 
         inventoriesLiveData.observe(this, inventoriesObserver)
 
-        listView.setOnItemClickListener { parent, view, position, id ->
+        listView.setOnItemClickListener { _, _, position, _ ->
             val element = listView.adapter.getItem(position) as Inventory
 
-            val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
+            val dialogClickListener = DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         // przejscie do widoku projektu
@@ -74,10 +79,9 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                     DialogInterface.BUTTON_NEGATIVE -> {
-                        val dialogClickListener = DialogInterface.OnClickListener { dialog, which ->
-                            when (which) {
+                        val dialogClickListener = DialogInterface.OnClickListener { _, whichButton ->
+                            when (whichButton) {
                                 DialogInterface.BUTTON_POSITIVE -> {
-                                    // Archiwizacja/dearchiwizacja projektu
                                     Thread {
                                         DatabaseSingleton.getInstance(this).InventoriesDAO().changeArchiveStatus(element.name)
                                         loadInventoriesList()
@@ -85,7 +89,6 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         }
-
                         val builder = AlertDialog.Builder(this)
                         builder.setMessage( if (element.active == 1) getString(R.string.archive_message) else getString(R.string.dearchive_message))
                             .setPositiveButton("Yes", dialogClickListener)
@@ -95,9 +98,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             val builder = AlertDialog.Builder(this)
-            builder.setMessage(element.name)
+            builder.setMessage(getString(R.string.select_inventory_message, element.name, element.id.toString()))
                 .setPositiveButton("OPEN", dialogClickListener)
-                .setNegativeButton("ARCHIVE", dialogClickListener).show()
+                .setNegativeButton(if (element.active == 1) "ARCHIVE" else "DEARCHIVE", dialogClickListener).show()
         }
     }
 
@@ -106,5 +109,19 @@ class MainActivity : AppCompatActivity() {
             val alsoArchived: Boolean = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE).getBoolean(resources.getString(R.string.show_archived), false)
             inventoriesLiveData.postValue(DatabaseSingleton.getInstance(this).InventoriesDAO().findAll(alsoArchived))
         }.start()
+    }
+
+    fun blockUI() {
+        for (child in parentView.children) {
+            child.isEnabled = false
+        }
+        progressBar.isVisible = true
+    }
+
+    fun unblockUI() {
+        for (child in parentView.children) {
+            child.isEnabled = true
+        }
+        progressBar.isVisible = false
     }
 }

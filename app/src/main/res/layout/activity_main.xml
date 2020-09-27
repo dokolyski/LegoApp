@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.mainActivity.MainActivity">
@@ -23,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:ems="10"
+        android:hint="@string/inputName"
         android:inputType="textPersonName"
-        android:text="@string/inputName"
         app:layout_constraintEnd_toStartOf="@+id/downloadNewSetButton"
         app:layout_constraintHorizontal_bias="0.378"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,8 +37,8 @@
         android:layout_height="43dp"
         android:layout_marginTop="16dp"
         android:ems="10"
+        android:hint="@string/inputId"
         android:inputType="textPersonName"
-        android:text="@string/inputId"
         app:layout_constraintEnd_toStartOf="@+id/downloadNewSetButton"
         app:layout_constraintHorizontal_bias="0.207"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,8 +65,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/existingInventoriesLabel"
-        app:layout_constraintVertical_bias="0.115" >
-    </ListView>
+        app:layout_constraintVertical_bias="0.115"></ListView>
 
     <ProgressBar
         android:id="@+id/projectLoadProgressBar"
