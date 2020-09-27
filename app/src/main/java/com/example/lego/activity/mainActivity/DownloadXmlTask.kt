@@ -1,4 +1,4 @@
-package com.example.lego.xml
+package com.example.lego.activity.mainActivity
 
 import android.app.AlertDialog
 import android.content.Context
@@ -7,12 +7,13 @@ import android.content.Intent
 import android.os.AsyncTask
 import android.widget.EditText
 import com.example.lego.R
-import com.example.lego.activity.mainActivity.MainActivity
 import com.example.lego.activity.partsListActivity.PartsListActivity
 import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.Code
 import com.example.lego.database.entity.Inventory
 import com.example.lego.database.entity.InventoryPart
+import com.example.lego.xml.Entry
+import com.example.lego.xml.XMLParser
 import com.example.lego.xml.exceptions.PartNotFound
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException

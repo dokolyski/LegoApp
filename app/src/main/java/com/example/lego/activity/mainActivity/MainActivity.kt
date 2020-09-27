@@ -19,7 +19,6 @@ import com.example.lego.activity.partsListActivity.PartsListActivity
 import com.example.lego.activity.settingsActivity.SettingsActivity
 import com.example.lego.database.DatabaseSingleton
 import com.example.lego.database.entity.Inventory
-import com.example.lego.xml.DownloadXmlTask
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
